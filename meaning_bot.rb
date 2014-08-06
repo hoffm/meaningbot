@@ -9,63 +9,84 @@ CONFIG = if File.exists?('meaning_bot.yml')
            ENV
          end
 
-#
-# this is the script for the twitter bot MeaningBot
-# generated on 2014-08-04 14:57:12 -0400
-#
-
 consumer_key CONFIG[:consumer_key]
 consumer_secret CONFIG[:consumer_secret]
 secret CONFIG[:secret]
 token CONFIG[:token]
 
 # remove this to send out tweets
-debug_mode
+#debug_mode
 
 # remove this to update the db
 no_update
 # remove this to get less output when running
 verbose
 
-# here's a list of users to ignore
-blacklist "abc", "def"
+###
+# Helpers
+###
 
-# here's a list of things to exclude from searches
-exclude "http", "#", '?', '@'
+EXCLUSIONS = %w{? " 42}.map{|e| "-#{e}"}.join(' ')
+
+def search_term(base, modifiers)
+  "\"#{base}\" " + EXCLUSIONS + ' ' + modifiers
+end
+
+###
+# Bot Script
+###
+
 
 left_tweets = []
-search "\"is the meaning of life\" -http -# -? -@ -\" -what -42" do |tweet|
+search search_term('is the meaning of life', '-what') do |tweet|
   left_tweets << tweet
 end
 
 right_tweets = []
-search "\"the meaning of life is\" -http -# -? -@ -\" -give -42" do |tweet|
+search search_term('the meaning of life is', '-give') do |tweet|
   right_tweets << tweet
 end
 
-subjects = left_tweets.map do |tweet|
-  tweet.text.sub(/is the meaning of life.*/i, '')
-end.uniq.sort_by{ |t| t.length }
+recent_tweet_text = client.user_timeline(
+  :screen_name => 'meaningbot',
+  :count => 200,
+  :trim_user => true
+).map(&:text).join
 
-predicates = right_tweets.map do |tweet|
-  tweet.text.sub(/.*the meaning of life is/i, '')
-end.uniq.sort_by{ |t| -t.length }
-
-[subjects.count, predicates.count].min.times do |i|
-  puts subjects[i] + 'is' + predicates[i]
-  puts ""
+subject_tweet = left_tweets.map do |tweet|
+  {
+    :tweet => tweet,
+    :text => tweet.text.sub(/is the meaning of life.*/i, '').strip.delete('\""')
+  }
+end.shuffle.find do |tweet|
+  !(tweet[:text] =~ /http|@|meaning/) &&
+  !(recent_tweet_text.index(tweet[:text]))
 end
 
-def read_file
-  text = []
+predicate_tweet = right_tweets.map do |tweet|
+  {
+    :tweet => tweet,
+    :text => tweet.text.sub(/.*the meaning of life is /i, '').strip.delete('\""')
+  }
+end.shuffle.find do |tweet|
+  (tweet[:text].length + subject_tweet[:text].length) < 136 &&
+    !(tweet[:text] =~ /http|@|meaning/) &&
+    !(recent_tweet_text.index(tweet[:text]))
+end
 
-  File.read("tmp/st_suspect_emails.txt").each_line do |line|
-    text << line.chop
+if subject_tweet[:text] && predicate_tweet[:text]
+  aphorism = subject_tweet[:text] + ' is ' + predicate_tweet[:text]
+  if tweet(aphorism)
+    client.favorite(subject_tweet[:tweet])
+    client.favorite(predicate_tweet[:tweet])
+    puts "Tweeted: " + aphorism
+  else
+    puts "Failed to tweet: " + aphorism
   end
-
-  text
+else
+  puts "Not enough data."
+  puts "LEFT: " + subject_tweet[:text].inspect
+  puts "RIGHT: " + predicate_tweet[:text].inspect
 end
 
-# replies do |tweet|
-#   reply "Yes #USER#, you are very kind to say that!", tweet
-# end
+
