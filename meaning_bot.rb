@@ -9,10 +9,10 @@ CONFIG = if File.exists?('meaning_bot.yml')
            ENV
          end
 
-consumer_key CONFIG[:consumer_key]
-consumer_secret CONFIG[:consumer_secret]
-secret CONFIG[:secret]
-token CONFIG[:token]
+consumer_key CONFIG['consumer_key']
+consumer_secret CONFIG['consumer_secret']
+secret CONFIG['secret']
+token CONFIG['token']
 
 # remove this to send out tweets
 #debug_mode
