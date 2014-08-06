@@ -36,7 +36,7 @@ end
 # Bot Script
 ###
 
-if rand(10 == 7) # Only tweet once every 100 minutes
+if rand(10) == 7 # Only tweet once every 100 minutes
 
   left_tweets = []
   search search_term('is the meaning of life', '-what') do |tweet|
