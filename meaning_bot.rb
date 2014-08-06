@@ -90,5 +90,7 @@ if rand(10 == 7) # Only tweet once every 100 minutes
     puts "RIGHT: " + predicate_tweet[:text].inspect
   end
 
+else
+  puts "Staying silent this time."
 end
 
