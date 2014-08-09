@@ -6,16 +6,6 @@ module MeaningBot
 
   module_function
 
-
-  # remove this to send out tweets
-  #debug_mode
-
-  # remove this to update the db
-  #no_update
-
-  # remove this to get less output when running
-  #verbose
-
   ###
   # Helpers
   ###
@@ -141,13 +131,13 @@ end
 CREDS = if File.exists?('bin/meaning_bot.yml')
           YAML.load_file('bin/meaning_bot.yml')
         else
-          ENV.symbolize_keys!
+          ENV
         end
 
-consumer_key CREDS[:consumer_key]
-consumer_secret CREDS[:consumer_secret]
-secret CREDS[:secret]
-token CREDS[:token]
+consumer_key CREDS['consumer_key']
+consumer_secret CREDS['consumer_secret']
+secret CREDS['secret']
+token CREDS['token']
 
 
 MeaningBot.run
