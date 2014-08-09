@@ -20,12 +20,18 @@ module MeaningBot
   # Helpers
   ###
 
-  SUBJECT_SIGNATURE = ' is the meaning of life'
-  PREDICATE_SIGNATURE = 'the meaning of life is '
-  UNDESIRABLE_CHARS = /http|@|meaning/
+  MEANING_NOUNS = %w{meaning purpose point}
+  SUBJECT_QUERIES = MEANING_NOUNS.map{|n| " is the #{n} of life"}
+  PREDICATE_QUERIES = MEANING_NOUNS.map{|n| "the #{n} of life is "}
+  SEARCH_EXCLUSIONS = '-? -42 -Christ'
+  UNDESIRABLE_STRINGS = /http|@|#{MEANING_NOUNS.join('|')}/
 
-  def search_term(base, modifiers)
-    "\"#{base}\" " + '-? -42 -Christ' + modifiers
+  def search_term(queries, modifiers)
+    [
+      queries.map{|q| "\"#{q}\""}.join(' OR '),
+      SEARCH_EXCLUSIONS,
+      modifiers
+    ].join(' ')
   end
 
   def one_nth_of_the_time(n)
@@ -43,11 +49,11 @@ module MeaningBot
   end
 
   def subject_tweets
-    get_search_tweets search_term(SUBJECT_SIGNATURE, '-what')
+    get_search_tweets search_term(SUBJECT_QUERIES, '-what')
   end
 
   def predicate_tweets
-    get_search_tweets search_term(PREDICATE_SIGNATURE, '-give')
+    get_search_tweets search_term(PREDICATE_QUERIES, '-give')
   end
 
   def recently_tweeted_text
@@ -62,27 +68,39 @@ module MeaningBot
     text
   end
 
+  def strip_queries_from_tweet(tweet_text, queries, query_type)
+    query_matchers = queries.map do |q|
+      matcher = ''
+      matcher += '.*' if query_type == :predicate
+      matcher += q
+      matcher += '.*' if query_type == :subject
+      matcher
+    end
+
+    tweet_text.sub(/#{query_matchers.join('|')}/i, '').strip.delete('\""')
+  end
+
   def pair_of_tweets
     recents = recently_tweeted_text
 
     subject_tweet = subject_tweets.map do |tweet|
       {
         :tweet => tweet,
-        :snippet => tweet.text.sub(/#{SUBJECT_SIGNATURE}.*/i, '').strip.delete('\""')
+        :snippet => strip_queries_from_tweet(tweet.text, SUBJECT_QUERIES, :subject)
       }
     end.shuffle.find do |tweet|
-      !(tweet[:snippet] =~ UNDESIRABLE_CHARS) &&
+      !(tweet[:snippet] =~ UNDESIRABLE_STRINGS) &&
         !(recents.index(tweet[:snippet].downcase))
     end
 
     predicate_tweet = predicate_tweets.map do |tweet|
       {
         :tweet => tweet,
-        :snippet => tweet.text.sub(/.*#{PREDICATE_SIGNATURE}/i, '').strip.delete('\""')
+        :snippet => strip_queries_from_tweet(tweet.text, PREDICATE_QUERIES, :predicate)
       }
     end.shuffle.find do |tweet|
       (tweet[:snippet].length + subject_tweet[:snippet].length + 4) < 140 &&
-        !(tweet[:snippet] =~ UNDESIRABLE_CHARS) &&
+        !(tweet[:snippet] =~ UNDESIRABLE_STRINGS) &&
         !(recents.index(tweet[:snippet].downcase))
     end
 
@@ -90,7 +108,7 @@ module MeaningBot
   end
 
 
-  def run(opts)
+  def run(opts={})
     if one_nth_of_the_time(10) || opts[:force]
       subject_tweet, predicate_tweet = pair_of_tweets
 
