@@ -150,4 +150,4 @@ secret CREDS[:secret]
 token CREDS[:token]
 
 
-MeaningBot.run(:testing => true, :force => true)
+MeaningBot.run
