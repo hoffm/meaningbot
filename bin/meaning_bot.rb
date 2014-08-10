@@ -10,7 +10,7 @@ module MeaningBot
   # Helpers
   ###
 
-  FREQUENCY = ARGV[0].to_i if ARGV[0] # Tweet 1 in ARGV[0] times
+  FREQUENCY = ARGV[0] ? ARGV[0].to_i : nil # Tweet 1 in ARGV[0] times
   TEST_MODE = ARGV[1] == 'test'
 
   MEANING_NOUNS = %w{meaning purpose point}
