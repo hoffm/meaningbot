@@ -16,8 +16,8 @@ module MeaningBot
   SEARCH_EXCLUSIONS = '-? -42 -Christ'
   UNDESIRABLE_STRINGS = /http|@|#{MEANING_NOUNS.join('|')}/
 
-  CREDS = if File.exists?('bin/meaning_bot.yml')
-            YAML.load_file('bin/meaning_bot.yml')
+  CREDS = if File.exists?('meaning_bot.yml')
+            YAML.load_file('meaning_bot.yml')
           else
             ENV
           end
@@ -110,8 +110,8 @@ module MeaningBot
 
 
   def run(opts={})
-    frequency = ARGV[0].to_i || 10
-    test_mode = (ARGV[1] == 'test') || false
+    frequency = ARGV[0] ?  ARGV[0].to_i : (opts[:frequency] || 6)
+    test_mode = (ARGV[1] == 'test') || opts[:testing]
 
     if one_nth_of_the_time(frequency)
       subject_tweet, predicate_tweet = pair_of_tweets
