@@ -16,6 +16,17 @@ module MeaningBot
   SEARCH_EXCLUSIONS = '-? -42 -Christ'
   UNDESIRABLE_STRINGS = /http|@|#{MEANING_NOUNS.join('|')}/
 
+  CREDS = if File.exists?('bin/meaning_bot.yml')
+            YAML.load_file('bin/meaning_bot.yml')
+          else
+            ENV
+          end
+
+  consumer_key CREDS['consumer_key']
+  consumer_secret CREDS['consumer_secret']
+  secret CREDS['secret']
+  token CREDS['token']
+
   def search_term(queries, modifiers)
     [
       queries.map{|q| "\"#{q}\""}.join(' OR '),
@@ -99,14 +110,17 @@ module MeaningBot
 
 
   def run(opts={})
-    if one_nth_of_the_time(10) || opts[:force]
+    frequency = ARGV[0].to_i || 10
+    test_mode = (ARGV[1] == 'test') || false
+
+    if one_nth_of_the_time(frequency)
       subject_tweet, predicate_tweet = pair_of_tweets
 
       if subject_tweet && predicate_tweet
         aphorism = subject_tweet[:snippet] + ' is ' + predicate_tweet[:snippet]
 
         puts "*"*10
-        if opts[:testing]
+        if test_mode
           puts "TESTING MODE. NOT TWEETING."
         else
           puts "TWEETING!"
@@ -127,17 +141,6 @@ module MeaningBot
   end
 
 end
-
-# CREDS = if File.exists?('bin/meaning_bot.yml')
-#           YAML.load_file('bin/meaning_bot.yml')
-#         else
-#           ENV
-#         end
-
-consumer_key ENV['consumer_key']
-consumer_secret ENV['consumer_secret']
-secret ENV['secret']
-token ENV['token']
 
 
 MeaningBot.run
