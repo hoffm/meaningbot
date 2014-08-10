@@ -10,6 +10,9 @@ module MeaningBot
   # Helpers
   ###
 
+  FREQUENCY = ARGV[0].to_i if ARGV[0] # Tweet 1 in ARGV[0] times
+  TEST_MODE = ARGV[1] == 'test'
+
   MEANING_NOUNS = %w{meaning purpose point}
   SUBJECT_QUERIES = MEANING_NOUNS.map{|n| " is the #{n} of life"}
   PREDICATE_QUERIES = MEANING_NOUNS.map{|n| "the #{n} of life is "}
@@ -17,6 +20,7 @@ module MeaningBot
   UNDESIRABLE_STRINGS = /http|@|#{MEANING_NOUNS.join('|')}/
 
   CREDS = if File.exists?('meaning_bot.yml')
+            puts "Reading config from meaning_bot.yml"
             YAML.load_file('meaning_bot.yml')
           else
             ENV
@@ -110,8 +114,8 @@ module MeaningBot
 
 
   def run(opts={})
-    frequency = ARGV[0] ?  ARGV[0].to_i : (opts[:frequency] || 6)
-    test_mode = (ARGV[1] == 'test') || opts[:testing]
+    frequency = FREQUENCY || opts[:frequency] || 6
+    test_mode = TEST_MODE || opts[:testing]
 
     if one_nth_of_the_time(frequency)
       subject_tweet, predicate_tweet = pair_of_tweets
