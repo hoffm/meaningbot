@@ -128,16 +128,16 @@ module MeaningBot
 
 end
 
-CREDS = if File.exists?('bin/meaning_bot.yml')
-          YAML.load_file('bin/meaning_bot.yml')
-        else
-          ENV
-        end
+# CREDS = if File.exists?('bin/meaning_bot.yml')
+#           YAML.load_file('bin/meaning_bot.yml')
+#         else
+#           ENV
+#         end
 
-consumer_key CREDS['consumer_key']
-consumer_secret CREDS['consumer_secret']
-secret CREDS['secret']
-token CREDS['token']
+consumer_key ENV['consumer_key']
+consumer_secret ENV['consumer_secret']
+secret ENV['secret']
+token ENV['token']
 
 
 MeaningBot.run
