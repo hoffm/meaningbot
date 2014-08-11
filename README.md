@@ -1,7 +1,7 @@
 meaningbot
 ==========
 
-Meaning Bot is a Twitter bot that synthesizes aphorisms about life's meaning. Follow it at [@meaningbot](https://twitter.com/meaningbot).
+Meaning Bot is a Twitter bot that synthesizes aphorisms about life's meaning. Follow it at [@MeaningBot](https://twitter.com/meaningbot).
 
 ### Description
 
