@@ -63,12 +63,12 @@ module MeaningBot
   # Don't perform public actions in test mode.
   TEST_MODE = ARGV[1] == 'test'
 
+  # For use in the contenxt "the X of life"
+  MEANING_NOUNS = %w{meaning purpose point}
+
   # These are our primary search terms.
   SUBJECT_QUERIES = MEANING_NOUNS.map{|n| " is the #{n} of life"}
   PREDICATE_QUERIES = MEANING_NOUNS.map{|n| "the #{n} of life is "}
-
-  # For use in the contenxt "the X of life"
-  MEANING_NOUNS = %w{meaning purpose point}
 
   # Don't search for tweets including these.
   SEARCH_EXCLUSIONS = '-? -42 -Christ'
