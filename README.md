@@ -19,8 +19,6 @@ into
 
 Care is taken to exclude words and phrases that result in boring content, and on each pass, we reference our past tweets in a effort not to be repetitive.
 
-This bot uses  [Chatterbot](https://github.com/muffinista/chatterbot), which is build on the [Twitter gem](https://github.com/sferik/twitter).
-
 ### Usage
 
 The code for this bot lives in `bin/meaning_bot.rb`, which contains the `MeaningBot` module, and also executes the `run` method defined therein. The bot can therefore be run both from the command line and from irb.
