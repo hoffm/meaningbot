@@ -3,6 +3,8 @@ meaningbot
 
 Meaning Bot is a Twitter bot that synthesizes aphorisms about life's meaning. Follow it at [@MeaningBot](https://twitter.com/meaningbot).
 
+It uses [Chatterbot](https://github.com/muffinista/chatterbot), which is build on the [Twitter gem](https://github.com/sferik/twitter).
+
 ### Description
 
 MeaningBot looks for tweets about the meaning (and point, and purpose…) of life, and combines pairs of them into aphorisms, which it then tweets. For example, it might combine these two tweets:
