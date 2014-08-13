@@ -137,7 +137,7 @@ module MeaningBot
       matcher
     end
 
-    tweet_text.sub(/#{query_matchers.join('|')}/im, '').strip.delete('\"')
+    tweet_text.sub(/#{query_matchers.join('|')}/im, '').strip.gsub(/”|\"/, '')
   end
 
   # Retrieve the two tweets that will be the raw material for the tweet.
