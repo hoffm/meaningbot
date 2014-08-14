@@ -71,7 +71,7 @@ module MeaningBot
   PREDICATE_QUERIES = MEANING_NOUNS.map{|n| "the #{n} of life is "}
 
   # Don't search for tweets including these.
-  SEARCH_EXCLUSIONS = "-? -42 -Christ -\"see the world\" -bitch -cunt -Kanye"
+  SEARCH_EXCLUSIONS = "-? -42 -Christ -\"see the world\" -bitch -cunt -Kanye -nigga -\"getting shit done\" -\"&amp;\""
 
   # Don't tweet text that matches this.
   UNDESIRABLE_STRINGS = /http|@|#{MEANING_NOUNS.join('|')}/
