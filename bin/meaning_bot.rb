@@ -36,6 +36,7 @@
 # which is build on the Twitter gem (https://github.com/sferik/twitter).
 module MeaningBot
   require 'rubygems'
+  require 'cgi'
   require 'chatterbot/dsl'
 
   module_function
@@ -137,7 +138,9 @@ module MeaningBot
       matcher
     end
 
-    tweet_text.sub(/#{query_matchers.join('|')}/im, '').strip.gsub(/”|\"/, '')
+    CGI.unescapeHTML(
+      tweet_text.sub(/#{query_matchers.join('|')}/im, '').strip.gsub(/”|\"/, '')
+    )
   end
 
   # Retrieve the two tweets that will be the raw material for the tweet.
