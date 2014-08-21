@@ -176,7 +176,7 @@ module MeaningBot
       (tweet[:snippet].length + subject_tweet[:snippet].length + 4) < 140 &&
         !(tweet[:snippet] =~ UNDESIRABLE_STRINGS) &&
         !(recents.index(tweet[:snippet].downcase))
-    end
+    end if subject_tweet
 
     [subject_tweet, predicate_tweet]
   end
