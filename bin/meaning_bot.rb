@@ -72,7 +72,7 @@ module MeaningBot
   PREDICATE_QUERIES = MEANING_NOUNS.map{|n| "the #{n} of life is "}
 
   # Don't search for tweets including these.
-  SEARCH_EXCLUSIONS = "-? -42 -Christ -\"see the world\" -bitch -cunt -Kanye -nigga -\"getting shit done\" -\"Burger King\""
+  SEARCH_EXCLUSIONS = %q{-? -42 -Christ -"see the world" -bitch -cunt -Kanye -nigga -"getting shit done" -"Burger King"}
 
   # Don't tweet text that matches this.
   UNDESIRABLE_STRINGS = /http|@|#{MEANING_NOUNS.join('|')}/
@@ -93,10 +93,12 @@ module MeaningBot
   # Perform a search and set Chatterbot's since_id back to zero,
   # so that future searches look as far back into history as possible.
   def get_search_tweets(query)
-    tweets = []
-    search query do |tweet|
-      tweets << tweet
-    end
+    puts "*****"
+    puts query
+    puts "*****"
+
+    tweets = client.search(query)
+
     since_id(0)
 
     tweets
