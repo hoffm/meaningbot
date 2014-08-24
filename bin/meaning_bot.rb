@@ -127,7 +127,7 @@ module MeaningBot
 
     since_id(0)
 
-    text
+    CGI.unescapeHTML(text)
   end
 
   # Remove the common text (i.e meaning phrase) from a tweet.
