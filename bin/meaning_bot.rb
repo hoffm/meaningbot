@@ -173,7 +173,7 @@ module MeaningBot
         :snippet => strip_queries_from_tweet(tweet.text, PREDICATE_QUERIES, :predicate)
       }
     end.shuffle.find do |tweet|
-      (tweet[:snippet].length + subject_tweet[:snippet].length + 4) < 140 &&
+      (tweet[:snippet].length + subject_tweet[:snippet].length + 4) < 280 &&
         !(tweet[:snippet] =~ UNDESIRABLE_STRINGS) &&
         !(recents.index(tweet[:snippet].downcase))
     end if subject_tweet
