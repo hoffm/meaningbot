@@ -10,4 +10,4 @@ RUN bundle install
 
 COPY . ./
 
-CMD ["bundle", "exec", "ruby", "bin/meaning_bot.rb", "1", "test"]
+CMD ["bundle", "exec", "ruby", "meaning_bot.rb", "1", "test"]

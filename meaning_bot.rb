@@ -20,11 +20,11 @@
 #
 # We can run this script from the command line. E.g.
 #
-#   ruby bin/meaning_bot.rb 1 test
+#   ruby meaning_bot.rb 1 test
 #
 # would run the bot in test mode, and force it to build a tweet, whereas
 #
-#   ruby bin/meaning_bot.rb 6
+#   ruby meaning_bot.rb 6
 #
 # would run in production mode, tweeting every 6th time on average.
 # To run the same two commands in irb, we would use the following:
@@ -41,20 +41,6 @@ module MeaningBot
 
   module_function
 
-  # Set up credentials for @meaningbot twitter app.
-  # Use a yml file in development, and a Render's
-  # ENV in production.
-  CREDS = if File.exists?('meaning_bot.yml')
-            puts "Reading config from meaning_bot.yml"
-            YAML.load_file('meaning_bot.yml')
-          else
-            ENV
-          end
-
-  consumer_key CREDS['consumer_key']
-  consumer_secret CREDS['consumer_secret']
-  secret CREDS['secret']
-  token CREDS['token']
   since_id 0
 
   # If provided, tweet one in every FREQUENCY times
@@ -93,10 +79,6 @@ module MeaningBot
   # Perform a search and set Chatterbot's since_id back to zero,
   # so that future searches look as far back into history as possible.
   def get_search_tweets(query)
-    puts "*****"
-    puts query
-    puts "*****"
-
     tweets = client.search(query)
 
     since_id(0)
