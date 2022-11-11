@@ -42,7 +42,7 @@ module MeaningBot
   module_function
 
   # Set up credentials for @meaningbot twitter app.
-  # Use a yml file in development, and a Heroku's
+  # Use a yml file in development, and a Render's
   # ENV in production.
   CREDS = if File.exists?('meaning_bot.yml')
             puts "Reading config from meaning_bot.yml"
