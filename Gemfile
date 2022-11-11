@@ -1,3 +1,3 @@
 source "https://rubygems.org"
 
-gem 'chatterbot', '~> 0.9.0'
+gem 'chatterbot', '~> 1.0.2'
