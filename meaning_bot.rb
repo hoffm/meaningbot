@@ -1,39 +1,20 @@
-#!/usr/bin/env ruby
-
-# This module contains all the code used by the @MeaningBot twitter account.
-# The account looks for tweets about the meaning (and point, and purpose…)
-# of life, and combines pairs of them into aphorisms, which it then tweets.
-# For example, it might combine these two tweets:
+# From the command line: 
 #
-#   The purpose of life is trying your hardest.
-#   Eating a meatball sub in the bathtub is the meaning of life.
+#   $ ruby meaningbot.rb [FREQENCY] [TEST_MODE]
 #
-# into
+# E.g.
 #
-#   Eating a meatball sub in the bathtub is trying your hardest.
-#
-# Care is taken to exclude words and phrases that result in boring content,
-# and on each pass, we reference our past tweets in a effort not to be
-# repetitive.
-#
-# *** USAGE ***
-#
-# We can run this script from the command line. E.g.
-#
-#   ruby meaning_bot.rb 1 test
+#   $ ruby meaning_bot.rb 1 test
 #
 # would run the bot in test mode, and force it to build a tweet, whereas
 #
-#   ruby meaning_bot.rb 6
+#   $ ruby meaning_bot.rb 6
 #
 # would run in production mode, tweeting every 6th time on average.
-# To run the same two commands in irb, we would use the following:
+# To run the same two commands within Ruby:
 #
-#   MeaningBot.run(:frequency => 1, :testing => true)
-#   MeaningBot.run(:frequency => 6)
-#
-# This app uses the Chatterbot gem (https://github.com/muffinista/chatterbot),
-# which is build on the Twitter gem (https://github.com/sferik/twitter).
+#   > MeaningBot.run(frequency: 1, testing: true)
+#   > MeaningBot.run(frequency: 6)
 module MeaningBot
   require 'rubygems'
   require 'cgi'
@@ -102,9 +83,9 @@ module MeaningBot
   # so that we can make an effort not to repeat ourselves.
   def recently_tweeted_text
     text = client.user_timeline(
-      :screen_name => 'meaningbot',
-      :count => 200,
-      :trim_user => true
+      screen_name: 'meaningbot',
+      count: 200,
+      trim_user: true
     ).map(&:text).join.downcase
 
     since_id(0)
@@ -137,8 +118,8 @@ module MeaningBot
     # and isn't repetitive with old tweets
     subject_tweet = subject_tweets.map do |tweet|
       {
-        :tweet => tweet,
-        :snippet => strip_queries_from_tweet(tweet.text, SUBJECT_QUERIES, :subject)
+        tweet:,
+        snippet: strip_queries_from_tweet(tweet.text, SUBJECT_QUERIES, :subject)
       }
     end.shuffle.find do |tweet|
       !(tweet[:snippet] =~ UNDESIRABLE_STRINGS) &&
@@ -151,8 +132,8 @@ module MeaningBot
     # doesn't include blacklisted words, and isn't repetitive with old tweets
     predicate_tweet = predicate_tweets.map do |tweet|
       {
-        :tweet => tweet,
-        :snippet => strip_queries_from_tweet(tweet.text, PREDICATE_QUERIES, :predicate)
+        tweet:,
+        snippet: strip_queries_from_tweet(tweet.text, PREDICATE_QUERIES, :predicate)
       }
     end.shuffle.find do |tweet|
       (tweet[:snippet].length + subject_tweet[:snippet].length + 4) < 280 &&
@@ -177,7 +158,7 @@ module MeaningBot
       if subject_tweet && predicate_tweet
         aphorism = subject_tweet[:snippet] + ' is ' + predicate_tweet[:snippet]
 
-        puts "*"*10
+        puts "*" * 10
         if test_mode
           puts "TESTING MODE. NOT TWEETING."
         else
